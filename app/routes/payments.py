@@ -1,7 +1,7 @@
 import json
 import asyncio
 
-from fastapi import APIRouter, Header, HTTPException, Response
+from fastapi import APIRouter, Header, HTTPException, Request, Response
 
 from app.models.payment import PaymentRequest
 from app.storage.redis_client import redis_client
@@ -11,6 +11,11 @@ from app.services.idempotency_service import (
     wait_for_completion,
     CACHE_TTL_SECONDS
 )
+from app.services.rate_limiter import (
+    check_rate_limit,
+    get_client_ip,
+    RATE_LIMIT_MAX_REQUESTS
+)
 
 router = APIRouter()
 
@@ -19,8 +24,19 @@ router = APIRouter()
 async def process_payment(
     payment: PaymentRequest,
     response: Response,
+    request: Request,
     idempotency_key: str = Header(None, alias="Idempotency-Key")
 ):
+
+    client_ip = get_client_ip(request)
+    allowed, retry_after = check_rate_limit(client_ip)
+
+    if not allowed:
+        raise HTTPException(
+            status_code=429,
+            detail=f"Too Many Requests.",
+            headers={"Retry-After": str(retry_after)}
+        )
 
     if not idempotency_key:
         raise HTTPException(
