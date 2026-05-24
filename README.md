@@ -318,14 +318,6 @@ REDIS_HOST=localhost REDIS_PORT=6379 uvicorn app.main:app
 └── README.md                            # Project documentation
 ```
 
-## 🛡️ Security & Compliance
-
-### Fraud Detection
-
-- **Payload Integrity**: SHA256 hash validation
-- **Duplicate Prevention**: Detects payload mismatches on retry
-- **Payload Mismatch**: Returns `409 Conflict`
-
 ## Design Decisions
 
 ### Why Redis?
