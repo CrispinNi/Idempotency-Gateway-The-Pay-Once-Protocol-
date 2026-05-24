@@ -318,7 +318,7 @@ REDIS_HOST=localhost REDIS_PORT=6379 uvicorn app.main:app
 └── README.md                            # Project documentation
 ```
 
-## Design Decisions
+## 💡 Design Decisions
 
 ### Why Redis?
 
@@ -372,7 +372,7 @@ Async locks guarantee:
 - only one request processes
 - all others wait safely
 
-## Developer's Choice Features
+## ⭐ Developer's Choice Features
 
 My choice Features based on the 🛡️ Security & Compliance.
 
